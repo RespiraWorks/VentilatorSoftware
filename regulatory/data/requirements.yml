@@ -1,0 +1,10 @@
+categories:
+- id: Alarms
+  name: Software Alarms
+
+requirements:
+- id: r-1
+  title: PIP Pressure Exceeds Limit Alarm
+  system_requirements: [SR-XX]
+  category: Alarms
+  description: The software shall indicate an alarm when an pressure exceeding the overpressure_alarm_limit variable is exceeded
