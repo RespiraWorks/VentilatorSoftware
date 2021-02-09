@@ -58,7 +58,7 @@ limitations under the License.
 //
 // Uncomment this line to get started:
 //
-#define NO_GUI_DEV_MODE
+// #define NO_GUI_DEV_MODE
 //
 // Then see comment on DEV_MODE_comms_handler below.
 //
@@ -111,13 +111,14 @@ static Controller controller;
 static ControllerStatus controller_status;
 static Sensors sensors;
 
+static Comms comms;
+
 // This function handles all the high priority tasks which need to be called
 // periodically.  The HAL calls this function from a timer interrupt.
 //
 // NOTE - it's important that anything being called from this function executes
 // quickly.  No busy waiting here.
 static void high_priority_task(void *arg) {
-
   // Read the sensors
   controller_status.sensor_readings = sensors.GetSensorReadings();
 
@@ -179,7 +180,7 @@ static void background_loop() {
     }
 
 #ifndef NO_GUI_DEV_MODE
-    comms_handler(local_controller_status, &gui_status);
+    comms.handler(controller_status, &gui_status);
 #else
     DEV_MODE_comms_handler(local_controller_status, &gui_status);
 #endif
@@ -202,7 +203,10 @@ int main() {
   // HalApi::init().
   Hal.init();
 
-  comms_init();
+  if (!comms.init()) {
+    // TODO maybe handle this in more involving way
+    Hal.reset_device();
+  }
 
   background_loop();
 }
